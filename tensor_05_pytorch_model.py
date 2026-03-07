@@ -22,9 +22,11 @@ model.eval()    # sets the model to evaluation mode by disabling training-specif
 with torch.inference_mode():        # preferred over "with torch.no_grad():"=> Bcuz more optimized version of no_grad() for inference.
     y_pred = model(X_test)
 
-print(y_pred)
-plot_predictions(predictions=y_pred)
-plt.show()
+
+if __name__ == "__main__":
+    print(y_pred)
+    plot_predictions(predictions=y_pred)
+    plt.show()
 
 
 """
