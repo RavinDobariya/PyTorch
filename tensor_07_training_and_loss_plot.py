@@ -1,6 +1,7 @@
 import torch 
 from torch import nn 
 import matplotlib.pyplot as plt
+from tensor_04_pytorch_linear_regression import plot_predictions
 from tensor_05_pytorch_model import LinearRegressionModel 
 
 bias = 0.3
@@ -69,7 +70,11 @@ for epoch in range(epochs):
             train_loss_values.append(loss.detach().numpy())   # Detach tensor from PyTorch computation graph and convert it to a NumPy array
             test_loss_values.append(test_loss.detach().numpy()) 
             print(f"Epoch: {epoch} | MAE Train Loss: {loss} | MAE Test Loss: {test_loss} ")
-            
+            print(model.state_dict())
+            print()
+
+# plot_predictions(predictions=test_pred)
+
 if __name__ == "__main__":            
   # Plot the loss curves
   plt.plot(epoch_count, train_loss_values, label="Train loss")
