@@ -110,6 +110,10 @@ for epoch in range(epochs):
     loss = loss_fn(y_logits, y_blob_train) 
     acc = accuracy_fn(y_true=y_blob_train, y_pred=y_pred)
 
+    # NOTE:
+    # loss is calucalted on => raw logits and target labels   => because nn.CrossEntropyLoss() does the softmax internally for us, so we can pass in the raw logits and it will handle the rest.
+    # accuracy is calculated on => predicted labels (results) and target labels
+
     # 3. Optimizer zero grad
     optimizer.zero_grad()
 
