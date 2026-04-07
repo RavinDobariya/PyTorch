@@ -7,6 +7,9 @@ import torchvision
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 
+from torch.utils.data import DataLoader
+
+
 # torchvision:
 # Contains datasets, model architectures, and image transformations
 # commonly used for computer vision tasks.
@@ -78,4 +81,56 @@ for i in range(1, rows * cols + 1): # 16 images - 1 to 16
     plt.title(class_names[label])
     plt.axis(False);
     
+
+# Setup the batch size hyperparameter
+BATCH_SIZE = 32
+
+# Turn datasets into iterables (batches)
+train_dataloader = DataLoader(train_data,batch_size=BATCH_SIZE, shuffle=True)  # .shape() => [32,1,28,28]
+# dataset to turn into iterable # how many samples per batch?  # shuffle data every epoch?
+ 
+test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False) # .shape() => [32,1,28,28] (last batch will have 16 samples)
+
+
+# Let's check out what we've created
+print(f"Dataloaders: {train_dataloader}, {test_dataloader}") 
+print(f"Length of train dataloader: {len(train_dataloader)} batches of {BATCH_SIZE}") # 60000 samples / 32 samples per batch = 1875 batches
+print(f"Length of test dataloader: {len(test_dataloader)} batches of {BATCH_SIZE}")   # 10000 samples / 32 samples per batch = 312.5 batches (round up to 313 batches)
+
+
+
+# Check out what's inside the training dataloader
+train_features_batch, train_labels_batch = next(iter(train_dataloader))
+print(f"Feature batch shape: {train_features_batch.shape}") # [32, 1, 28, 28] (batch size, colour channels, height, width
+print(f"Label batch shape: {train_labels_batch.shape}") # [32] (batch size,)
+
+# Show a sample
+# torch.manual_seed(42)
+plt.figure() 
+random_idx = torch.randint(0, len(train_features_batch), size=[1]).item()       # size=[x] returns x random integer, .item() turns tensors into a python number
+img, label = train_features_batch[random_idx], train_labels_batch[random_idx]
+plt.imshow(img.squeeze(), cmap="gray")
+plt.title(class_names[label])
+plt.axis("Off");
+
 plt.show()
+
+print(f"Image size: {img.shape}")
+print(f"Label: {label}, label size: {label.shape}")
+
+
+# Create a flatten layer
+flatten_model = nn.Flatten()    # NOTE: all nn modules function as a model (can do a forward pass)
+
+# Get a single sample
+x = train_features_batch[0]
+
+# Flatten the sample
+y = flatten_model(x) # perform forward pass
+
+# Print out what happened
+print(f"Shape before flattening: {x.shape} -> [color_channels, height, width]")
+print(f"Shape after flattening: {y.shape} -> [color_channels, height*width]")
+
+# NOTE: Flattening converts multi-dimensional data (like images) into a 1D vector 
+# so it can be used by layers (like nn.Linear) that expect flat input.
